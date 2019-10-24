@@ -1,0 +1,186 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[spanish,es-nodecimaldot]{babel}	% Utilizar español
+\usepackage[utf8]{inputenc}					% Caracteres UTF-8
+\usepackage{graphicx}						% Imagenes
+\usepackage[hidelinks]{hyperref}			% Poner enlaces sin marcarlos en rojo
+\usepackage{fancyhdr}						% Modificar encabezados y pies de pagina
+\usepackage{float}							% Insertar figuras
+\usepackage[textwidth=390pt]{geometry}		% Anchura de la pagina
+\usepackage[nottoc]{tocbibind}				% Referencias (no incluir num pagina indice en Indice)
+\usepackage{enumitem}						% Permitir enumerate con distintos simbolos
+\usepackage[T1]{fontenc}					% Usar textsc en sections
+\usepackage{amsmath}						% Símbolos matemáticos
+\usepackage{listings}
+\usepackage{color}
+
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.99,0.99,0.99}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle, language=Python}
+
+% Comando para poner el nombre de la asignatura
+\newcommand{\asignatura}{Visión por Computador}
+\newcommand{\autor}{José María Sánchez Guerrero}
+\newcommand{\titulo}{Cuestionario 1}
+\newcommand{\subtitulo}{Filtrado y Detección de regiones}
+
+% Configuracion de encabezados y pies de pagina
+\pagestyle{fancy}
+\lhead{\autor{}}
+\rhead{\asignatura{}}
+\lfoot{Grado en Ingeniería Informática}
+\cfoot{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}		% Linea cabeza de pagina
+\renewcommand{\footrulewidth}{0.4pt}		% Linea pie de pagina
+
+\begin{document}
+\pagenumbering{gobble}
+
+% Pagina de titulo
+\begin{titlepage}
+
+\begin{minipage}{\textwidth}
+
+\centering
+
+\includegraphics[scale=0.5]{img/ugr.png}\\
+
+\textsc{\Large \asignatura{}\\[0.2cm]}
+\textsc{GRADO EN INGENIERÍA INFORMÁTICA}\\[1cm]
+
+\noindent\rule[-1ex]{\textwidth}{1pt}\\[1.5ex]
+\textsc{{\Huge \titulo\\[0.5ex]}}
+\textsc{{\Large \subtitulo\\}}
+\noindent\rule[-1ex]{\textwidth}{2pt}\\[3.5ex]
+
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{\textwidth}
+
+\centering
+
+\textbf{Autor}\\ {\autor{}}\\[2.5ex]
+\textbf{Rama}\\ {Computación y Sistemas Inteligentes}\\[2.5ex]
+\vspace{0.3cm}
+
+\includegraphics[scale=0.3]{img/etsiit.jpeg}
+
+\vspace{0.7cm}
+\textsc{Escuela Técnica Superior de Ingenierías Informática y de Telecomunicación}\\
+\vspace{1cm}
+\textsc{Curso 2019-2020}
+\end{minipage}
+\end{titlepage}
+
+\pagenumbering{arabic}
+\tableofcontents
+\thispagestyle{empty}				% No usar estilo en la pagina de indice
+
+\newpage
+
+\setlength{\parskip}{1em}
+
+
+\section*{Ejercicio 1}
+\addcontentsline{toc}{section}{Ejercicio 1}
+
+\textbf{Diga en una sola frase cuál cree que es el objetivo principal de la Visión por Computador. Diga también cuál
+es la principal propiedad de las imágenes de cara a la creación algoritmos que la procesen.}
+
+El objetivo principal de la Visión por Computador es obtener información significativa de imágenes digitales, posteriormente
+analizarla, tratarla y comprender su contenido para tomar decisiones sobre ella de la forma más similar posible a la humana.
+
+Pese a la respresentación en forma matricial de las imágenes que facilita los cálculos a los algoritmos, no podemos centrarnos
+únicamente en una posición (píxel) de ésta, ya que los valores alrededor suyo también contienen información relevante sobre él.
+
+
+\section*{Ejercicio 2}
+\addcontentsline{toc}{section}{Ejercicio 2}
+
+\textbf{Expresar las diferencias y semejanzas entre las operaciones de correlación y convolución. Dar una interpretación
+de cada una de ellas que en el contexto de uso en visión por computador.}
+
+Ambas son operaciones que transforman localmente una imagen calculado nuevos valores para cada uno de los píxeles. Esto lo hacen
+utilizando una máscara 2D de tamaño $NxN$, siendo $N$ un número impar, y aplicándola de la siguiente forma:
+
+Para la correlación:
+\begin{equation}
+G[i,j]= \sum_{u=-k}^{k} \sum_{v=-k}^{k} H[u,v]F[i+u,j+v]
+\end{equation}
+
+Para la convolución:
+\begin{equation}
+G[i,j]= \sum_{u=-k}^{k} \sum_{v=-k}^{k} H[u,v]F[i-u,j-v]
+\end{equation}
+
+Como podemos ver, correlación y convolución son prácticamente iguales, excepto que en la convolución volteamos el filtro antes de
+correlacionar. Por ejemplo, convolucionar una imagen 1D con un filtro $(1,3,5)$ sería lo mismo que correlacionarla con el filtro
+$(5,3,1)$. En caso de que fuese una convolución 2D voltearíamos tanto horizontal como verticalmente.
+
+Otra cosa que tienen en común es que, como ambos son filtros lineales, ambos cumplen las siguientes propiedades: la \textbf{
+superposición}, la cual dice que es lo mismo aplicar una máscara a una composición de imágenes $f_1+f_2$, que aplicarsela a
+$f_1$ y a $f_2$ por separado: $h*(f_1 + f_2) = (h*f_1) + (h*f_2)$; y son \textbf{\textit{Shift-Invariant System}}, es decir,
+sistemas cuyo valor de entrada no cambian los valores de salida, por lo que no dependen de ellos.
+
+La diferencias más importantes entre ellos es que la convolución es \textbf{conmutativa}, \textbf{distributiva en la adición} y, la
+más relevante, \textbf{asociativa}. Es decir, siendo $f$ y $g$ dos filtros distintos, entonces $(f * g)*h = f*(g * h)$. Esto es muy
+útil por ejemplo para calcular el filtro \textit{Difference of Gaussian (DoG)}, en el que no tendríamos que convolucionar la imagen
+con un filtro Gaussiano y posteriormente con uno derivado, simplemente convolucionaríamos el filtro Gaussiano con el derivado y ya se
+lo aplicamos a la imagen.
+
+
+\section*{Ejercicio 3}
+\addcontentsline{toc}{section}{Ejercicio 3}
+
+\textbf{¿Cuál es la diferencia “esencial” entre el filtro de convolución y el de mediana? Justificar la respuesta.}
+
+La principal diferencia entre estos filtros es que el filtro de convolución, como hemos visto antes, es lineal, mientras que el
+filtro de mediana no lo es. Para justificar la respuesta veamos un ejemplo: si tenemos los filtros $A=(0,1,2,3,4)$, $B=(5,0,1,4,5)$
+y $(A+B)=(5,1,3,7,9)$, el cálculo de sus medianas es:
+\begin{equation}
+Med(A) = 2 \hspace{10mm} Med(B) = 4
+\end{equation}
+Y por tanto, como:
+
+\begin{equation}
+Med(A)+Med(B)=6 \hspace{5mm} \neq \hspace{5mm} Med(A+B)=5
+\end{equation}
+
+podemos justificar que los filtros de mediana no son lineales.
+
+\newpage
+
+
+\section*{Ejercicio 4}
+\addcontentsline{toc}{section}{Ejercicio 4}
+
+\textbf{Identifique el “mecanismo concreto” que usa un filtro de máscara para transformar una imagen.}
+
+Usan información local en vez de global
+
+\end{document}
