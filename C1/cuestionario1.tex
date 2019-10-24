@@ -181,6 +181,15 @@ podemos justificar que los filtros de mediana no son lineales.
 
 \textbf{Identifique el “mecanismo concreto” que usa un filtro de máscara para transformar una imagen.}
 
-Usan información local en vez de global
+El mecanismo que utilizan todos los filtros de máscara para transformar una imagen es que lo hace utilizando \textbf{información local},
+es decir, que el valor de cada píxel se calcula teniendo en cuenta los píxeles cercanos a él (los que están dentro de la máscara).
+
+Podremos encontrar varios tipos de filtros, ya sean lineales o no lineales como hemos visto antes, pero ninguno realizará cálculos
+en la imagen sin tener en cuenta sus píxeles asociados en la máscara.
+
+\section*{Ejercicio 5}
+\addcontentsline{toc}{section}{Ejercicio 5}
+
+\textbf{¿De qué depende que una máscara de convolución pueda ser implementada por convoluciones 1D? Justificar la respuesta.}
 
 \end{document}
