@@ -192,4 +192,149 @@ en la imagen sin tener en cuenta sus píxeles asociados en la máscara.
 
 \textbf{¿De qué depende que una máscara de convolución pueda ser implementada por convoluciones 1D? Justificar la respuesta.}
 
+Depende de que la máscara de convolución solo se pueda descomponer como producto de dos matrices de dimensión 1. Por ejemplo,
+la siguiente máscara Gaussiana se puede descomponer en:
+
+\begin{equation}
+\begin{bmatrix}
+1 & 2 & 1\\ 
+2 & 4 & 2\\ 
+1 & 2 & 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+1\\
+2\\
+1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 2 & 1
+\end{bmatrix}
+\end{equation}
+
+
+Para comprobar si esto es posible, podemos realizar la \textbf{descomposición en valores singulares} de la matriz. Si esta
+descomposición nos da un valor distinto de 0, la máscara será separable en dos matrices 1D, y por tanto, la podremos represetar
+como:
+\begin{equation}
+\sum_{r}^{i=0}\sigma_i u_i v_i^T
+\end{equation}
+siendo $\sigma_i$ los valores de la matriz diagonal, y $u_i$ y $v_i$ los valores de las respectivas matrices 1D resultantes.
+
+Otra forma que tenemos de comprobarlo es que, si nos fijamos en este tipo de máscaras, el \textbf{rango} de la matriz siempre va
+a ser igual a 1.
+
+
+\section*{Ejercicio 6}
+\addcontentsline{toc}{section}{Ejercicio 6}
+
+\textbf{Identificar las diferencias y consecuencias desde el punto de vista teórico y de la implementación entre:}
+\begin{enumerate}[label=(\alph*)]
+	\item \textbf{Primero alisar la imagen y después calcular las derivadas sobre la imagen alisada}
+	\item \textbf{Primero calcular las imágenes derivadas y después alisar dichas imágenes.}
+\end{enumerate}
+\textbf{Justificar los argumentos.}
+
+Desde un punto de vista teórico dependerá del tipo de filtro que usemos, pero lo lógico sería elegir un filtro de convolución.
+Como hemos visto en el ejercicio 2, este filtro tiene cumple la propiedad \textbf{asociativa}, por lo que tanto la opción $a$ como
+la $b$ darían el mismo resultado.
+
+\begin{equation}
+(f*g)*h=f*(g*h)
+\end{equation}
+
+En cuanto a la implementación, es más conveniente \textbf{alisar primero la imagen y posteriormente calcular las derivadas} sobre
+la imagen alisada. Si lo hacemos de esta forma, tendremos que hacer solo una convolución y dos derivadas después. De la otra forma,
+haremos dos derivadas al principio y posteriormente dos alisamientos, uno para la X y otro para la Y.
+
+
+\section*{Ejercicio 7}
+\addcontentsline{toc}{section}{Ejercicio 7}
+
+\textbf{}
+
+
+\section*{Ejercicio 8}
+\addcontentsline{toc}{section}{Ejercicio 8}
+
+
+\section*{Ejercicio 9}
+\addcontentsline{toc}{section}{Ejercicio 9}
+
+
+\section*{Ejercicio 10}
+\addcontentsline{toc}{section}{Ejercicio 10}
+
+
+\section*{Ejercicio 11}
+\addcontentsline{toc}{section}{Ejercicio 11}
+
+\textbf{¿Bajo qué condiciones podemos garantizar una perfecta reconstrucción de una imagen a partir de su pirámide Laplaciana? Dar
+argumentos y discutir las opciones que considere necesario.}
+
+Únicamente con la pirámide Laplaciana no podríamos reconstruir la imagen original, también necesitaríamos la última submuestra de
+la imagen obtenida al hacer la pirámide Gaussiana.
+
+Si disponemos de ella, se podría reconstruir con el siguiente algoritmo, el cual consiste en sumar al último nivel de la Laplaciana
+esta última submuestra de la Gaussiana ampliada con una función F:
+\begin{equation}
+G_k=L_k+F(G_{k+1})
+\end{equation}
+
+Cuando terminemos (llegemos a $G_1$) será cuando tengamos la imagen original completamente reconstruida.
+
+\section*{Ejercicio 12}
+\addcontentsline{toc}{section}{Ejercicio 12}
+
+\textbf{¿Cuáles son las contribuciones más relevantes del algoritmo de Canny al cálculo de los contornos sobre una imagen? ¿Existe
+alguna conexión entre las máscaras de Sobel y el algoritmo de Canny? Justificar la respuesta}
+
+Las contribuciones que tiene este algoritmo frente a otros es que este utiliza las siguientes técnicas:
+\begin{enumerate}
+	\item \textbf{Non-maximum supression.} Esta técnica recorre todos los píxeles de cada imagen y, para cada uno de ellos, comprueba
+	que sus píxeles fronterizos no tienen un valor más alto que el central. En caso de que exista, lo pondrá este a cero.
+			\begin{equation*}
+				\begin{bmatrix}
+				3& 2& 3\\ 
+				6& 4& 1\\ 
+				1& 3& 3
+				\end{bmatrix}
+				\underset{(x,y)>=(0,0)}{\rightarrow}
+				\begin{bmatrix}
+				3& 2& 3\\ 
+				6& 0& 1\\ 
+				1& 3& 3
+				\end{bmatrix}
+				\hspace{10mm}
+				\begin{bmatrix}
+				3& 2& 3\\ 
+				1& 4& 1\\ 
+				1& 3& 3
+				\end{bmatrix}
+				\underset{(x,y)<(0,0)}{\rightarrow}
+				\begin{bmatrix}
+				0& 0& 0\\ 
+				0& 4& 0\\ 
+				0& 0& 0
+				\end{bmatrix}
+			\end{equation*}
+	Para tener más claro cómo funciona este algoritmo, vamos a ejemplificarlo con una matriz ejemplo que represente los píxeles de una imagen.
+
+
+	\item dskjfjegnjdgbffjb
+\end{enumerate}
+
+
+\section*{Ejercicio 13}
+\addcontentsline{toc}{section}{Ejercicio 13}
+
+
+\section*{Ejercicio 14}
+\addcontentsline{toc}{section}{Ejercicio 14}
+
+
+\section*{Ejercicio 15}
+\addcontentsline{toc}{section}{Ejercicio 15}
+
+
 \end{document}
