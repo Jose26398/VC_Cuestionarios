@@ -113,7 +113,7 @@
 c) segmentación de imágenes; d) segmentación de instancias.}
 
 La \textbf{clasificación de imágenes} y consiste en, dada una imágen, catalogarla dependiendo del contenido de ésta. Por ejemplo, en la siguiente
-imágen podemos clasificarla perfectamente como "gato":
+imágen podemos clasificarla perfectamente como 'cat':
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{img/classifier.png}
@@ -142,7 +142,7 @@ a una clase en concreto. Si tomamos de ejemplo la misma imagen del gato, sería 
 \end{figure}
 
 No obstante, lo que las diferencia la una de la otra es que, la \textbf{segmentación de imágenes} no crea máscaras para cada objeto individual en la escena. Por
-ejemplo, si tuviesemos más de una gato en la foto anterior, nos lo fusionaría y detectaría todo como "cat".
+ejemplo, si tuviesemos más de una gato en la foto anterior, nos lo fusionaría y detectaría todo como 'cat'.
 
 Esto con la \textbf{segmentación de instancias} no ocurre, ya que separa todos los objetos de una imagen y los clasifica como clases distintas (al igual que ocurría
 con la detección de objetos). Veamos un ejemplo con la imagen anterior:
@@ -160,23 +160,20 @@ con la detección de objetos). Veamos un ejemplo con la imagen anterior:
 posibles soluciones para estos últimos.}
 
 Esta técnica se la conoce como \textbf{\textit{Sliding Window Detection}}, la cual es capaz de detectar objetos en varios pasos bastante simples: primero
-inspecciona la imagen desplazando una ventana de detección con un tamaño prefijado (a varias escalas ya que los objetos pueden aparecer con distintos
-tamaños en la imagen), después extrae las características para cada ventana; y por último, clasifica los resultados obtenidos y filtra los que se superpongan
-(dos ventanas detecten el mismo objeto) eligiendo la que mayor precisión tenga.
+inspecciona la imagen desplazando una ventana de detección, después extrae las características para cada ventana; y por último, clasifica los resultados
+obtenidos y filtra los que se superpongan.
 
-Las \textbf{ventajas} que tiene son que es un algoritmo bastante simple y que realiza una búsqueda exhaustiva sobre la posición y la escala (puede usar
+Las \textbf{ventajas} que tiene es que es un algoritmo bastante simple y que realiza una búsqueda exhaustiva sobre la posición y la escala (puede usar
 una ventana del mismo tamaño sobre una pirámide espacial de imágenes).
 
 Las \textbf{desventajas} que tiene son las siguientes:
 \begin{itemize}
-	\item \textit{Objetos de distintos tamaños}. Como dijimos anteriormente, los objetos pueden aparecer con tamaños distintos en la imagen, pero para
-		  solucionar esto se ha propuesto analizar la imagen a múltiples escalas con un tamaño de ventana prefijado. Altenativamente, también podemos analizar
-		  la imagen con distintos tamaños y proporciones de ventana.
-	\item \textit{Variada relación de aspecto}. La ventan que utilizemos no será la misma para analizar, por ejemplo, un gato de frente que un gato de perfil.
-		  Si utilizamos varias ventanas con diferente relación de aspecto, el número de imagenes escaneadas será el número de escalas por los diferentes tamaños
-		  de ventana que queramos asignar, y esto puede ser muy poco eficiente computacionalmente. Es difícil encontrar una solución concreta para este problema,
-		  pero lo que se podría es ajustar la ventana a lo que estamos intentando hallar (para un semáforo, no elegir una ventana cuadrada, sería más bien
-		  alargada).
+	\item \textit{Objetos de distintos tamaños}. Los objetos pueden aparecer con tamaños distintos en la imagen. Para solucionar esto se ha propuesto analizar
+          la imagen a múltiples escalas con un tamaño de ventana prefijado. Altenativamente, también podemos analizar la imagen con distintos tamaños y proporciones
+          de ventana.
+	\item \textit{Variada relación de aspecto}. La ventana necesaria para analizar, por ejemplo, un gato de frente que un gato de perfil, no será la misma.
+		  Es difícil encontrar una solución concreta para este problema, pero se podría ajustar la ventana a lo que estamos intentando hallar (para un semáforo,
+          no elegir una ventana cuadrada, sería más bien alargada).
 	\item \textit{Superposición de objetos y múltiples respuestas}. Dos o más ventanas pueden reconocer el mismo objeto, no obstante, cada una de estas múltiples
 		  respuestas tienen distintos pesos. Tendremos que realizar una supresión de no máximos (también para las distintas escalas) y quedarnos con el mejor.
 \end{itemize}
@@ -189,7 +186,14 @@ Las \textbf{desventajas} que tiene son las siguientes:
 paralelismo entre la forma de actuar de esta técnica y el algoritmo de Canny. En caso positivo identifique cuales son los elementos comunes y en que se
 diferencian los distintos.}
 
+Esta aproximación es la \textbf{\textit{Selective Search}}, la cual no tiene aspectos muy similares al algoritmo de $Canny$. La búsqueda selectiva extrae una
+serie de características para cada píxel y realiza una agrupación jerárquica basándose en similitudes entre texturas, tamaños, forma y color; mientras que
+$Canny$ simplemente realiza una detección de contornos mediante histéresis. En caso de utilizar la búsqueda selectiva para detección de contornos, se podrían
+obtener diferenciando entre unos segmentos detectados y otros.
 
+Como similitud podemos comentar que ambos tienen en cuenta las distintas escalas de a imagen, con la diferencia de que la búsqueda selectiva utiliza un algoritmo
+jerárquico, y $Canny$ detecta los contornos a gran escala aumentando un valor de $\sigma$ y viceversa. También hacen uso de la derivada de la Gaussiana
+para hacer un filtrado de la imagen.
 
 
 \section*{Ejercicio 4}
@@ -198,6 +202,12 @@ diferencian los distintos.}
 \textbf{Tanto el descriptor de SIFT como HOG usan el mismo tipo de información de la imagen pero en contextos distintos. Diga en que se parecen y en que son
 distintos estos descriptores. Explique para que es útil cada uno de ellos.}
 
+Ambos están basados en los gradientes de primer orden de la imagen, pero como su propio nombre indica, HoG simplemente realiza un histograma de los gradientes
+agrupándolos segun su orientación; mientras que SIFT, después de hacer este histograma, realiza una interpolación entre ángulos vecinos y pondera los valores
+de todo el descriptor mediante la Gaussiana.
+
+Debido a esta ponderación Gaussiana que tiene SIFT, veo más útil utilizarlo para describir la importancia en un único punto; y HoG es más adecuado usarlo en
+la clasificación de imágenes en general, ya que no tiene ese sesgo.
 
 
 \section*{Ejercicio 5}
@@ -205,6 +215,13 @@ distintos estos descriptores. Explique para que es útil cada uno de ellos.}
 
 \textbf{Observando el funcionamiento global de una CNN, identifique que dos procesos fundamentales definen lo que se realiza en un pase hacia delante de una
 imagen por la red. Asocie las capas que conozca a cada uno de ellos.}
+
+\begin{enumerate}
+    \item Utilizar capas convolucionales con su activación 'ReLU', 'linear', 'tanh'..., capas de $pooling$ o algunas funciones de regularización como
+          \textit{Dropout} o \textit{BatchNormalization}.
+    \item Utilizar un clasificador con capas totalmente conectadas para realizar la predicción. También contarán con su función de activación (siendo la
+          última 'softmax' para obtener las probabilidades de cada clase como salida).
+\end{enumerate}
 
 
 
@@ -214,6 +231,14 @@ imagen por la red. Asocie las capas que conozca a cada uno de ellos.}
 \textbf{Se ha visto que el aumento de la profundidad de una CNN es un factor muy relevante para la extracción de características en problemas complejos, sin
 embargo este enfoque añade nuevos problemas. Identifique cuales son y qué soluciones conoce para superarlos.}
 
+Aumentar la profundida en una red neuronal de forma excesiva nos puede llevar al \textbf{sobreaprendizaje}, ya que función de salida obtenida se ajusta casi por completo
+al conjunto de entrenamiento. Una solución que podemos aplicar es el aumento del conjunto de datos (técnicas como \textit{horizontal flip}, o hacer zoom en partes
+de la imagen son un ejemplo de esto). Otra solución para evitar el sobreaprendizaje es regularizar los datos introduciendo capas como \textit{Dropout} o
+\textit{BatchNormalization}.
+
+Por otra parte, al hacer \textbf{\textit{backpropagation}} se pierde precisión y los gradientes también van disminuyendo. Este problema es más difícil de solucionar,
+ya que tendríamos que buscar nuevos métodos, como puede ser la ejecución capa por capa o utilizar clasificadores auxiliares en distintos niveles de la red neuronal
+(como hace GoogleNet).
 
 
 \section*{Ejercicio 7}
