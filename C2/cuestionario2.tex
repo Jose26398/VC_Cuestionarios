@@ -1,0 +1,294 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[spanish,es-nodecimaldot]{babel}	% Utilizar español
+\usepackage[utf8]{inputenc}					% Caracteres UTF-8
+\usepackage{graphicx}						% Imagenes
+\usepackage[hidelinks]{hyperref}			% Poner enlaces sin marcarlos en rojo
+\usepackage{fancyhdr}						% Modificar encabezados y pies de pagina
+\usepackage{float}							% Insertar figuras
+\usepackage[textwidth=390pt]{geometry}		% Anchura de la pagina
+\usepackage[nottoc]{tocbibind}				% Referencias (no incluir num pagina indice en Indice)
+\usepackage{enumitem}						% Permitir enumerate con distintos simbolos
+\usepackage[T1]{fontenc}					% Usar textsc en sections
+\usepackage{amsmath}						% Símbolos matemáticos
+\usepackage{listings}
+\usepackage{color}
+
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.99,0.99,0.99}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle, language=Python}
+
+% Comando para poner el nombre de la asignatura
+\newcommand{\asignatura}{Visión por Computador}
+\newcommand{\autor}{José María Sánchez Guerrero}
+\newcommand{\titulo}{Cuestionario 2}
+\newcommand{\subtitulo}{Clasificación de escenas y objetos}
+
+% Configuracion de encabezados y pies de pagina
+\pagestyle{fancy}
+\lhead{\autor{}}
+\rhead{\asignatura{}}
+\lfoot{Grado en Ingeniería Informática}
+\cfoot{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}		% Linea cabeza de pagina
+\renewcommand{\footrulewidth}{0.4pt}		% Linea pie de pagina
+
+\begin{document}
+\pagenumbering{gobble}
+
+% Pagina de titulo
+\begin{titlepage}
+
+\begin{minipage}{\textwidth}
+
+\centering
+
+\includegraphics[scale=0.5]{img/ugr.png}\\
+
+\textsc{\Large \asignatura{}\\[0.2cm]}
+\textsc{GRADO EN INGENIERÍA INFORMÁTICA}\\[1cm]
+
+\noindent\rule[-1ex]{\textwidth}{1pt}\\[1.5ex]
+\textsc{{\Huge \titulo\\[0.5ex]}}
+\textsc{{\Large \subtitulo\\}}
+\noindent\rule[-1ex]{\textwidth}{2pt}\\[3.5ex]
+
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{\textwidth}
+
+\centering
+
+\textbf{Autor}\\ {\autor{}}\\[2.5ex]
+\textbf{Rama}\\ {Computación y Sistemas Inteligentes}\\[2.5ex]
+\vspace{0.3cm}
+
+\includegraphics[scale=0.3]{img/etsiit.jpeg}
+
+\vspace{0.7cm}
+\textsc{Escuela Técnica Superior de Ingenierías Informática y de Telecomunicación}\\
+\vspace{1cm}
+\textsc{Curso 2019-2020}
+\end{minipage}
+\end{titlepage}
+
+\pagenumbering{arabic}
+\tableofcontents
+\thispagestyle{empty}				% No usar estilo en la pagina de indice
+
+\newpage
+
+\setlength{\parskip}{1em}
+
+
+\section*{Ejercicio 1}
+\addcontentsline{toc}{section}{Ejercicio 1}
+
+\textbf{Identifique las semejanzas y diferencias entre los problemas de: a) clasificación de imágenes; b) detección de objetos;
+c) segmentación de imágenes; d) segmentación de instancias.}
+
+La \textbf{clasificación de imágenes} y consiste en, dada una imágen, catalogarla dependiendo del contenido de ésta. Por ejemplo, en la siguiente
+imágen podemos clasificarla perfectamente como "gato":
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{img/classifier.png}
+\caption{Clasificación de imágenes + localización}
+\end{figure}
+
+Por otra parte, la \textbf{detección de objetos} se parece a la clasificación en que el objetivo principal es el mismo, dependiendo de lo que aparezca en la
+imagen, decir qué está reflejado en ella.
+
+Lo que diferencia a la detección de objetos es que encuentra todos los objetos de una imagen, dibujando un cuadro delimitador alrededor de ellos.
+
+En la imágen anterior, hemos visto que se dibuja un rectángulo, ya que ha detectado sólo un gato. Sin embargo, esto es lo que hace la detección de objetos cuando
+hay más cosas en la escena:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{img/object_detection.png}
+\caption{Detección de objetos}
+\end{figure}
+
+Algo parecido ocurre con la segmentación de imágenes y la segmentación de instancias. Ambas consisten en, dada una imagen, clasificar cada píxel como perteneciente
+a una clase en concreto. Si tomamos de ejemplo la misma imagen del gato, sería algo así:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{img/semantic_segmentation.png}
+\caption{Segmentación de imágenes}
+\end{figure}
+
+No obstante, lo que las diferencia la una de la otra es que, la \textbf{segmentación de imágenes} no crea máscaras para cada objeto individual en la escena. Por
+ejemplo, si tuviesemos más de una gato en la foto anterior, nos lo fusionaría y detectaría todo como "cat".
+
+Esto con la \textbf{segmentación de instancias} no ocurre, ya que separa todos los objetos de una imagen y los clasifica como clases distintas (al igual que ocurría
+con la detección de objetos). Veamos un ejemplo con la imagen anterior:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{img/image_segmentation.png}
+\caption{Segmentación de instancias}
+\end{figure}
+
+
+\section*{Ejercicio 2}
+\addcontentsline{toc}{section}{Ejercicio 2}
+
+\textbf{¿Cuál es la técnica de búsqueda estándar para la detección de objetos en una imagen? Identifique pros y contras de la misma e indique
+posibles soluciones para estos últimos.}
+
+Esta técnica se la conoce como \textbf{\textit{Sliding Window Detection}}, la cual es capaz de detectar objetos en varios pasos bastante simples: primero
+inspecciona la imagen desplazando una ventana de detección con un tamaño prefijado (a varias escalas ya que los objetos pueden aparecer con distintos
+tamaños en la imagen), después extrae las características para cada ventana; y por último, clasifica los resultados obtenidos y filtra los que se superpongan
+(dos ventanas detecten el mismo objeto) eligiendo la que mayor precisión tenga.
+
+Las \textbf{ventajas} que tiene son que es un algoritmo bastante simple y que realiza una búsqueda exhaustiva sobre la posición y la escala (puede usar
+una ventana del mismo tamaño sobre una pirámide espacial de imágenes).
+
+Las \textbf{desventajas} que tiene son las siguientes:
+\begin{itemize}
+	\item \textit{Objetos de distintos tamaños}. Como dijimos anteriormente, los objetos pueden aparecer con tamaños distintos en la imagen, pero para
+		  solucionar esto se ha propuesto analizar la imagen a múltiples escalas con un tamaño de ventana prefijado. Altenativamente, también podemos analizar
+		  la imagen con distintos tamaños y proporciones de ventana.
+	\item \textit{Variada relación de aspecto}. La ventan que utilizemos no será la misma para analizar, por ejemplo, un gato de frente que un gato de perfil.
+		  Si utilizamos varias ventanas con diferente relación de aspecto, el número de imagenes escaneadas será el número de escalas por los diferentes tamaños
+		  de ventana que queramos asignar, y esto puede ser muy poco eficiente computacionalmente. Es difícil encontrar una solución concreta para este problema,
+		  pero lo que se podría es ajustar la ventana a lo que estamos intentando hallar (para un semáforo, no elegir una ventana cuadrada, sería más bien
+		  alargada).
+	\item \textit{Superposición de objetos y múltiples respuestas}. Dos o más ventanas pueden reconocer el mismo objeto, no obstante, cada una de estas múltiples
+		  respuestas tienen distintos pesos. Tendremos que realizar una supresión de no máximos (también para las distintas escalas) y quedarnos con el mejor.
+\end{itemize}
+
+
+\section*{Ejercicio 3}
+\addcontentsline{toc}{section}{Ejercicio 3}
+
+\textbf{Considere la aproximación que extrae una serie de características en cada píxel de la imagen para decidir si hay contorno o no. Diga si existe algún
+paralelismo entre la forma de actuar de esta técnica y el algoritmo de Canny. En caso positivo identifique cuales son los elementos comunes y en que se
+diferencian los distintos.}
+
+
+
+
+\section*{Ejercicio 4}
+\addcontentsline{toc}{section}{Ejercicio 4}
+
+\textbf{Tanto el descriptor de SIFT como HOG usan el mismo tipo de información de la imagen pero en contextos distintos. Diga en que se parecen y en que son
+distintos estos descriptores. Explique para que es útil cada uno de ellos.}
+
+
+
+\section*{Ejercicio 5}
+\addcontentsline{toc}{section}{Ejercicio 5}
+
+\textbf{Observando el funcionamiento global de una CNN, identifique que dos procesos fundamentales definen lo que se realiza en un pase hacia delante de una
+imagen por la red. Asocie las capas que conozca a cada uno de ellos.}
+
+
+
+\section*{Ejercicio 6}
+\addcontentsline{toc}{section}{Ejercicio 6}
+
+\textbf{Se ha visto que el aumento de la profundidad de una CNN es un factor muy relevante para la extracción de características en problemas complejos, sin
+embargo este enfoque añade nuevos problemas. Identifique cuales son y qué soluciones conoce para superarlos.}
+
+
+
+\section*{Ejercicio 7}
+\addcontentsline{toc}{section}{Ejercicio 7}
+
+\textbf{Existe actualmente alternativas de interés al aumento de la profundidad para el diseño de CNN. En caso afirmativo diga cuál/es y como son.}
+
+
+
+
+\section*{Ejercicio 8}
+\addcontentsline{toc}{section}{Ejercicio 8}
+
+\textbf{Considere una aproximación clásica al reconocimiento de escenas en donde extraemos de la imagen un vector de características y lo usamos para decidir la
+clase de cada imagen. Compare este procedimiento con el uso de una CNN para el mismo problema. ¿Hay conexión entre ambas aproximaciones? En caso afirmativo indique
+en que parecen y en que son distintas.}
+
+
+\section*{Ejercicio 9}
+\addcontentsline{toc}{section}{Ejercicio 9}
+
+\textbf{¿Cómo evoluciona el campo receptivo de las neuronas de una CNN con la profundidad de la capas? ¿Se solapan los campos receptivos de las distintas neuronas de
+una misma profundidad? ¿Es este hecho algo positivo o negativo de cara a un mejor funcionamiento?}
+
+
+
+
+\section*{Ejercicio 10}
+\addcontentsline{toc}{section}{Ejercicio 10}
+
+\textbf{¿Qué operación es central en el proceso de aprendizaje y optmización de una CNN?}
+
+
+
+
+\section*{Ejercicio 11}
+\addcontentsline{toc}{section}{Ejercicio 11}
+
+\textbf{Compare los modelos de detección de objetos basados en aproximaciones clásicas y los basados en CNN y diga que dos procesos comunes a ambos aproximaciones han
+sido muy mejorados en los modelos CNN. Indique cómo.}
+
+
+
+\section*{Ejercicio 12}
+\addcontentsline{toc}{section}{Ejercicio 12}
+
+\textbf{Es posible construir arquitecturas CNN que sean independientes de las dimensiones de la imagen de entrada. En caso afirmativo diga cómo hacerlo y cómo
+interpretar la salida.}
+
+
+
+
+\section*{Ejercicio 13}
+\addcontentsline{toc}{section}{Ejercicio 13}
+
+\textbf{Suponga que entrenamos una arquitectura Lenet-5 para clasificar imágenes 128x128 de 5 clases distintas. Diga que cambios deberían de hacerse en la arquitectura
+del modelo para que se capaz de detectar las zonas de la imagen donde aparecen alguno de los objetos con los que fue entrenada.}
+
+
+
+\section*{Ejercicio 14}
+\addcontentsline{toc}{section}{Ejercicio 14}
+
+\textbf{Argumente por qué la transformación de un tensor de dimensiones 128x32x32 en otro de dimensiones 256x16x16, usando una convolución 3x3 con stride=2, tiene sentido
+que pueda ser aproximada por una secuencia de tres convoluciones: convolución 1x1 + convolución 3x3 + convolución 1x1. Diga también qué papel juegan cada una de las tres
+convoluciones.}
+
+
+
+
+\section*{Ejercicio 15}
+\addcontentsline{toc}{section}{Ejercicio 15}
+
+\textbf{Identifique una propiedad técnica de los modelos CNN que permite pensar que podrían llegar a aproximar con precisión las características del modelo de visión
+humano, y que sin ella eso no sería posible. Explique bien su argumento.}
+
+
+\end{document}

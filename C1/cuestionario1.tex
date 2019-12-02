@@ -251,19 +251,50 @@ haremos dos derivadas al principio y posteriormente dos alisamientos, uno para l
 \section*{Ejercicio 7}
 \addcontentsline{toc}{section}{Ejercicio 7}
 
-\textbf{}
+\textbf{Identifique las funciones de las que podemos extraer pesos correctos para implementar de forma eficiente la primera derivada de
+una imagen. Suponer alisamiento Gaussiano.}
+
+
 
 
 \section*{Ejercicio 8}
 \addcontentsline{toc}{section}{Ejercicio 8}
 
+\textbf{Identifique las funciones de las que podemos extraer pesos correctos para implementar de forma eficiente la Laplaciana de una imagen.
+Suponer alisamiento Gaussiano.}
+
 
 \section*{Ejercicio 9}
 \addcontentsline{toc}{section}{Ejercicio 9}
 
+\textbf{Suponga que le piden implementar de forma eficiente un algoritmo para el cálculo de la derivada de primer orden sobre una imagen
+usando alisamiento Gaussiano. Enumere y explique los pasos necesarios para llevarlo a cabo.}
+
+Los pasos necesarios serían:
+\begin{enumerate}
+	\item Seleccionar un tamaño para la máscara o calcularlo en función del $sigma$. Podemos poner por ejemplo $6\sigma+1$, ya que con la
+	densidad de la función Gaussiana que nos ofrece abarcamos casi toda la máscara.
+	\item Calcular los filtros de la primera derivada de la función Gaussiana. Para ello tendremos que muestrear en tantos puntos como
+	tamaño hayamos seleccionado anteriormente. También tendremos en cuenta que obtendremos un array para las filas y otro para las columnas.
+	\item Normalizar el filtro multiplicando por sigma y hacer la convolución, tanto por filas como por columnas, sobre la imagen.
+\end{enumerate}
+
 
 \section*{Ejercicio 10}
 \addcontentsline{toc}{section}{Ejercicio 10}
+
+\textbf{Identifique semejanzas y diferencias entre la pirámide gaussiana y el espacio de escalas de una imagen, ¿cuándo usar una u
+otra? Justificar los argumentos.}
+
+Ambas son una representación a distintas escalas de una imagen en las que se utiliza como filtro de suavizado principal el Gaussiano.
+También coinciden en la forma de hacer el submuestreo, ya que ambas obtienen la octava de la imagen original, y a partir de ahí siguen
+bajando niveles con la imagen resultante.
+
+Se diferencian en que la pirámide Gaussiana únicamente reduce la imagen y obtiene las frecuencias bajas de ella; mientras que en un
+espacio de escalas, también se hace uso de estas frecuencias bajas, pero lo hace junto a una serie de técnicas (como puede ser el filtro
+Laplaciano sobre el alisamiento o supresión de no másximos) ya que el objetivo de este es detectar las distintas regiones más relevantes
+de la imagen. Otra diferencia es que, pese a que se trabaja con una octava de la imagen en cada nivel, esa octava es diferente en una
+técnica y otra, porque en el espacio de escalas se realiza cada una de las técnicas comentadas para cada nivel.
 
 
 \section*{Ejercicio 11}
@@ -272,11 +303,11 @@ haremos dos derivadas al principio y posteriormente dos alisamientos, uno para l
 \textbf{¿Bajo qué condiciones podemos garantizar una perfecta reconstrucción de una imagen a partir de su pirámide Laplaciana? Dar
 argumentos y discutir las opciones que considere necesario.}
 
-Únicamente con la pirámide Laplaciana no podríamos reconstruir la imagen original, también necesitaríamos la última submuestra de
-la imagen obtenida al hacer la pirámide Gaussiana.
+Únicamente con las frecuencias altas de la pirámide Laplaciana no podríamos reconstruir la imagen original, también necesitaríamos la 
+última submuestra de la imagen, es decir, las frecuencias bajas residuales.
 
 Si disponemos de ella, se podría reconstruir con el siguiente algoritmo, el cual consiste en sumar al último nivel de la Laplaciana
-esta última submuestra de la Gaussiana ampliada con una función F:
+esta última submuestra de frecuencias bajas, y ampliada con una función F:
 \begin{equation}
 G_k=L_k+F(G_{k+1})
 \end{equation}
@@ -292,49 +323,123 @@ alguna conexión entre las máscaras de Sobel y el algoritmo de Canny? Justifica
 Las contribuciones que tiene este algoritmo frente a otros es que este utiliza las siguientes técnicas:
 \begin{enumerate}
 	\item \textbf{Non-maximum supression.} Esta técnica recorre todos los píxeles de cada imagen y, para cada uno de ellos, comprueba
-	que sus píxeles fronterizos no tienen un valor más alto que el central. En caso de que exista, lo pondrá este a cero.
-			\begin{equation*}
-				\begin{bmatrix}
-				3& 2& 3\\ 
-				6& 4& 1\\ 
-				1& 3& 3
-				\end{bmatrix}
-				\underset{(x,y)>=(0,0)}{\rightarrow}
-				\begin{bmatrix}
-				3& 2& 3\\ 
-				6& 0& 1\\ 
-				1& 3& 3
-				\end{bmatrix}
-				\hspace{10mm}
-				\begin{bmatrix}
-				3& 2& 3\\ 
-				1& 4& 1\\ 
-				1& 3& 3
-				\end{bmatrix}
-				\underset{(x,y)<(0,0)}{\rightarrow}
-				\begin{bmatrix}
-				0& 0& 0\\ 
-				0& 4& 0\\ 
-				0& 0& 0
-				\end{bmatrix}
-			\end{equation*}
-	Para tener más claro cómo funciona este algoritmo, vamos a ejemplificarlo con una matriz ejemplo que represente los píxeles de una imagen.
+	que sus píxeles fronterizos no tienen un valor más alto que el central. En caso de que exista, lo pondrá a cero. Para tener más
+	claro cómo funciona, vamos a ejemplificarlo con una matriz ejemplo que represente los píxeles de una imagen:
+	\begin{equation*}
+		\begin{bmatrix}
+		3& 2& 3\\ 
+		6& 4& 1\\ 
+		1& 3& 3
+		\end{bmatrix}
+		\underset{(x,y)>=(0,0)}{\rightarrow}
+		\begin{bmatrix}
+		3& 2& 3\\ 
+		6& 0& 1\\ 
+		1& 3& 3
+		\end{bmatrix}
+		\hspace{10mm}
+		\begin{bmatrix}
+		3& 2& 3\\ 
+		1& 4& 1\\ 
+		1& 3& 3
+		\end{bmatrix}
+		\underset{(x,y)<(0,0)}{\rightarrow}
+		\begin{bmatrix}
+		0& 0& 0\\ 
+		0& 4& 0\\ 
+		0& 0& 0
+		\end{bmatrix}
+	\end{equation*}
+	A la izquierda vemos que hay valores mayores que el central, el $(1,0)=6$, asi que el píxel central termina siendo cero. Por otra parte, en
+	la matriz de la izquierda, ningun valor es más grande que el central, por lo que podemos decir que es un máximo.
 
+	\item \textbf{Linking and thresholding (hysteresis).} Tras hacer la supresión de no máximos, define dos umbrales (thresholding), uno alto
+	y otro bajo. Volveremos a recorrer cada píxel y dependiendo su valor con los umbrales se hará lo siguiente: en caso de ser inferior que el
+	bajo, no se le considerará como borde; si está entre bajo y el alto, será parte del borde si está conectado a otro que ya está considerado
+	como borde; y si el valor es superior al umbral alto, se le considerará como borde.
 
-	\item dskjfjegnjdgbffjb
+	Antes de aplicar estas dos técnicas, Canny tiene que encontrar la magnitud y orientación del gradiente. Para ello se servirá de las
+	\textbf{máscaras de Sobel}, las cuales se basan en el cálculo de la primera derivada respecto de X e Y.
+
 \end{enumerate}
 
 
 \section*{Ejercicio 13}
 \addcontentsline{toc}{section}{Ejercicio 13}
 
+\textbf{Identificar pros y contras de k-medias como mecanismo para crear un vocabulario visual a partir del cual poder caracterizar patrones.
+¿Qué ganamos y que perdemos? Justificar los argumentos}
+
+K-means es un algoritmo de clasificación no supervisado el cual selecciona un número de clústeres y sus centros. Después, clasifica cada punto
+de los descriptores calculando la distancia entre ellos y el centro más cercano, minimizando el error de la suma de cuadrados; y por último
+recalcula los centros de cada cluster.
+
+Es de los algoritmos más utilizados y más populares, ya que entre sus principales \textbf{ventajas} tenemos:
+\begin{itemize}
+	\item Simplicidad y velocidad que le permite ejecutarse en grandes conjuntos de datos. Su complejidad computacional por cada iteración es
+	de: asignar cada punto al centro del cluster más cercano $O(n*k)$, y recalcular el centro del cluster a la media de sus puntos asignados $O(n)$.
+	\item Utiliza "hard assignment", es decir, cada punto se asigna a únicamente un solo cluster.
+	\item Su simplicidad facilita la demostración de los resultados obtenidos, a diferencia de las redes neuronales o las SVM.
+	\item Que sea eficiente implica que el algoritmo es bueno por si necesitamos segmentar el conjunto de datos.
+\end{itemize}
+
+Entre sus \textbf{desventajas} tenemos que:
+\begin{itemize}
+	\item Los centros de los k clusters iniciales se inicializan aleatoriamente, asi que no se produce el mismo resultado tras cada ejecución.
+	Una mala inicialización	nos puede llevar a: una mala velocidad de convergencia y a un mal agrupamiento de los clusteres.
+	\item Necesita el número de clústeres que se especificarán. Demasiados clústeres pueden causar escasez de datos y muy pocos pueden provocar que
+	llegen a converger, por eso hay que elegir con cuidado.
+	\item No garantiza que el resultado sea un mínimo global de la varianza, ya que converge a un óptimo local.
+	\item Sensible a los valores atípicos. Cuando hay valores atípicos, los centros de los clusteres resultantes pueden no ser tan representativos y,
+	por lo tanto, el error de la suma de cuadrados (varianza) también será más alto, y nuestro objetivo en minimizarlo.
+	\item No trabaja bien con grupos no lineales.
+\end{itemize}
+
 
 \section*{Ejercicio 14}
 \addcontentsline{toc}{section}{Ejercicio 14}
+
+\textbf{Identifique pros y contras del modelo de “Bolsa de Palabras” como mecanismo para caracterizar el contenido de una imagen. ¿Qué ganamos y
+que perdemos? Justificar los argumentos.}
+
+El modelo de 'Bolsa de Palabras' extrae las características locales de una imagen, muestrea un subconjunto de ellas y construye un diccionario
+visual mediante \textit{k-means} visto en el ejercicio anterior, cuantifica las característica utilizando este diccionario, y por último, representa
+imágenes mediante la frecuencia de cada 'palabra visual'. Veamos las \textbf{ventajas} de usar este método:
+\begin{itemize}
+	\item Es bastante flexible a la geometría o las deformaciones producidas por el punto de vista (donde hayamos tomado la imagen).
+	\item Resume bastante bien el contenido de la imagen.
+	\item Proporciona una representación vectorial para imágenes y poder crear así un histograma.
+	\item En la práctica, nos ofrece buenos resultados.
+\end{itemize}
+
+Como \textbf{desventajas} tenemos que:
+\begin{itemize}
+	\item Generar el vocabulario a partir de grandes cantidades de datos suele ser computacionalmente costoso.
+	\item El modelo básico no tiene en cuenta la geometría, asi que tendrá que verificar después o codificar mediante funciones.
+	\item Para los humanos, intuitivamente vemos la división de los objetos en partes, pero realmente esa información no existe. Por tanto, no
+	tenemos	grantías de capturar todos los puntos de interés.
+	\item Si la bolsa de palabras cubre toda la imagen, se puede mezclar el fondo y el primer plano. Para solucionarlo se suelen utilizar las
+	pirámides espaciales.
+	\item Sigue siendo complicado la formación del vocabulario óptimo, al igual que todavía no ha sido ampliamente testeado para invarianza
+	en la escala y en el punto de vista.
+\end{itemize}
 
 
 \section*{Ejercicio 15}
 \addcontentsline{toc}{section}{Ejercicio 15}
 
+\textbf{Suponga que dispone de un conjunto de imágenes de dos tipos de clases bien diferenciadas. Suponga que conoce como implementar de forma
+eficiente el cálculo de las derivadas hasta el orden N de la imagen. Describa como crear un algoritmo que permita diferenciar, con garantías,
+imágenes de ambas clases. Justificar cada uno de los pasos que proponga.}
+
+Como sabemos calcular de manera eficiente las derivadas hasta el orden N, yo utilizaría un espacio de escalas y así obtener las características
+invariantes a la escala. Después haríamos la supresión de no máximos, pero eliminando los contornos porque si no, nos encontraríamos ahí a la
+mayoría de máximos. A continuación, realizamos el cálculo del gradiente para cada punto obtenido y se crea el histograma con las mayores
+frecuencias de direcciones. Por último, ya podemos pasar a extraer las características con un algoritmo.
+
+Este algoritmo consistirá en una 'Bolsa de palabras', en el cual aprenderemos un 'vocabulario visual' muestreando un subconjunto de características
+y después utilizando un algoritmo de clustering como el \textit{k-means}. Cuantificamos las características utilizando este diccionario y para terminar
+ya sólo nos faltaría un clasificador, y como las características deben de estar bien diferenciadas si hemos hecho correctamente los pasos anteriores,
+yo utilizaría un SVM o kNN para separarlas.
 
 \end{document}
