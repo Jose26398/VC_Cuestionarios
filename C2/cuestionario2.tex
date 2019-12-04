@@ -159,14 +159,10 @@ con la detección de objetos). Veamos un ejemplo con la imagen anterior:
 \textbf{¿Cuál es la técnica de búsqueda estándar para la detección de objetos en una imagen? Identifique pros y contras de la misma e indique
 posibles soluciones para estos últimos.}
 
-Esta técnica se la conoce como \textbf{\textit{Sliding Window Detection}}, la cual es capaz de detectar objetos en varios pasos bastante simples: primero
-inspecciona la imagen desplazando una ventana de detección, después extrae las características para cada ventana; y por último, clasifica los resultados
-obtenidos y filtra los que se superpongan.
+Esta técnica se la conoce como \textbf{\textit{Sliding Window Detection}}, el cual es un algoritmo capaz de detectar objetos en varios pasos bastante simples y que
+realiza una búsqueda exhaustiva sobre la posición y la escala (puede usar una ventana del mismo tamaño sobre una pirámide espacial de imágenes).
 
-Las \textbf{ventajas} que tiene es que es un algoritmo bastante simple y que realiza una búsqueda exhaustiva sobre la posición y la escala (puede usar
-una ventana del mismo tamaño sobre una pirámide espacial de imágenes).
-
-Las \textbf{desventajas} que tiene son las siguientes:
+Las desventajas que tiene son las siguientes:
 \begin{itemize}
 	\item \textit{Objetos de distintos tamaños}. Los objetos pueden aparecer con tamaños distintos en la imagen. Para solucionar esto se ha propuesto analizar
           la imagen a múltiples escalas con un tamaño de ventana prefijado. Altenativamente, también podemos analizar la imagen con distintos tamaños y proporciones
@@ -231,9 +227,9 @@ imagen por la red. Asocie las capas que conozca a cada uno de ellos.}
 \textbf{Se ha visto que el aumento de la profundidad de una CNN es un factor muy relevante para la extracción de características en problemas complejos, sin
 embargo este enfoque añade nuevos problemas. Identifique cuales son y qué soluciones conoce para superarlos.}
 
-Aumentar la profundida en una red neuronal de forma excesiva nos puede llevar al \textbf{sobreaprendizaje}, ya que función de salida obtenida se ajusta casi por completo
-al conjunto de entrenamiento. Una solución que podemos aplicar es el aumento del conjunto de datos (técnicas como \textit{horizontal flip}, o hacer zoom en partes
-de la imagen son un ejemplo de esto). Otra solución para evitar el sobreaprendizaje es regularizar los datos introduciendo capas como \textit{Dropout} o
+Aumentar la profundida en una red neuronal de forma excesiva nos puede llevar al \textbf{sobreaprendizaje}, ya que la función de salida obtenida se ajusta casi por
+completo al conjunto de entrenamiento. Una solución que podemos aplicar es el aumento del conjunto de datos (técnicas como \textit{horizontal flip}, o hacer zoom en
+partes de la imagen son un ejemplo de esto). Otra solución para evitar el sobreaprendizaje es regularizar los datos introduciendo capas como \textit{Dropout} o
 \textit{BatchNormalization}.
 
 Por otra parte, al hacer \textbf{\textit{backpropagation}} se pierde precisión y los gradientes también van disminuyendo. Este problema es más difícil de solucionar,
@@ -246,6 +242,13 @@ ya que tendríamos que buscar nuevos métodos, como puede ser la ejecución capa
 
 \textbf{Existe actualmente alternativas de interés al aumento de la profundidad para el diseño de CNN. En caso afirmativo diga cuál/es y como son.}
 
+La primera alternativa sería el \textbf{desacoplamiento de nodos}, que elimina la conexión entre el nodo de la capa actual y el de la siguiente, ya sea poniéndolo
+a 0 con $Dropout$ o con $BatchNormalization$.
+
+Otra posible alternativa sería la que utiliza $DenseNet$, que aumenta el número de conexiones entre una capas conectando la actual con todas las anteriores a ella
+(aumento de \textbf{densidad}).
+
+También tenemos el uso de múltiples escalas simultáneamente, es decir, aumentar la \textbf{anchura} de una red para así poder extraer más características.
 
 
 
@@ -255,6 +258,12 @@ ya que tendríamos que buscar nuevos métodos, como puede ser la ejecución capa
 \textbf{Considere una aproximación clásica al reconocimiento de escenas en donde extraemos de la imagen un vector de características y lo usamos para decidir la
 clase de cada imagen. Compare este procedimiento con el uso de una CNN para el mismo problema. ¿Hay conexión entre ambas aproximaciones? En caso afirmativo indique
 en que parecen y en que son distintas.}
+
+La arquitectura y los pasos que seguimos en una aproximación clásica son exactamente los mismos que los que utilizamos en la actualidad, primero se hacía la
+extracción de características y luego se aprendía un clasificador.
+
+La diferencia es que en la aproximación clásica, la extracción de características las tenía que hacer la persona manualmente y lo único que se aprendía era el
+clasificador; mientras que en las CNN actuales aprendemos tanto el clasificador como las características.
 
 
 \section*{Ejercicio 9}
@@ -277,9 +286,19 @@ una misma profundidad? ¿Es este hecho algo positivo o negativo de cara a un mej
 \section*{Ejercicio 11}
 \addcontentsline{toc}{section}{Ejercicio 11}
 
-\textbf{Compare los modelos de detección de objetos basados en aproximaciones clásicas y los basados en CNN y diga que dos procesos comunes a ambos aproximaciones han
+\textbf{Compare los modelos de detección de objetos basados en aproximaciones clásicas y los basados en CNN y diga que dos procesos comunes a ambas aproximaciones han
 sido muy mejorados en los modelos CNN. Indique cómo.}
 
+El enfoque tradicional realiza la \textbf{detección de objetos} mediante técnicas bien establecidas como SIFT, SURF, BRIEF, etc; y posteriormente se extraen las
+características para hacer la \textbf{clasificación de imágenes}. Si un número significativo de características de una bolsa de palabras está en otra imagen, la imagen
+se clasifica como un objeto en específico.
+
+La dificultad con este enfoque tradicional es que es necesario elegir qué características son importantes en cada imagen dada, y medida que aumenta el número de clases
+se vuelve más complicado (es el criterio ingeniero el que decide qué características describen mejor los objetos).
+
+Los \textbf{modelos CNN} introdujeron el concepto \textit{end-to-end}, donde solo se recibe un conjunto de datos con todas sus clases y se entrena sobre ellos. Las redes
+neuronales descubren patrones en las imágenes (ya sea detección de bordes, de esquinas...) y automáticamente extrae las características más descriptivas con respecto a
+cada clase.
 
 
 \section*{Ejercicio 12}
