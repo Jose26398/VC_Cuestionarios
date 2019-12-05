@@ -182,14 +182,14 @@ Las desventajas que tiene son las siguientes:
 paralelismo entre la forma de actuar de esta técnica y el algoritmo de Canny. En caso positivo identifique cuales son los elementos comunes y en que se
 diferencian los distintos.}
 
-Esta aproximación es la \textbf{\textit{Selective Search}}, la cual no tiene aspectos muy similares al algoritmo de $Canny$. La búsqueda selectiva extrae una
-serie de características para cada píxel y realiza una agrupación jerárquica basándose en similitudes entre texturas, tamaños, forma y color; mientras que
-$Canny$ simplemente realiza una detección de contornos mediante histéresis. En caso de utilizar la búsqueda selectiva para detección de contornos, se podrían
+Una aproximación que hace esto es la \textbf{\textit{Selective Search}}, la cual no tiene aspectos muy similares al algoritmo de $Canny$. La búsqueda selectiva
+extrae una serie de características para cada píxel y realiza una agrupación jerárquica basándose en similitudes entre texturas, tamaños, forma y color; mientras
+que $Canny$ simplemente realiza una detección de contornos mediante histéresis. En caso de utilizar la búsqueda selectiva para detección de contornos, se podrían
 obtener diferenciando entre unos segmentos detectados y otros.
 
 Como similitud podemos comentar que ambos tienen en cuenta las distintas escalas de a imagen, con la diferencia de que la búsqueda selectiva utiliza un algoritmo
-jerárquico, y $Canny$ detecta los contornos a gran escala aumentando un valor de $\sigma$ y viceversa. También hacen uso de la derivada de la Gaussiana
-para hacer un filtrado de la imagen.
+jerárquico, y $Canny$ detecta los contornos de escalas más grandes (sin fijarse tanto en los detalles) aumentando un valor de $\sigma$ y viceversa. También hacen
+uso de la derivada de la Gaussiana para hacer un filtrado de la imagen.
 
 
 \section*{Ejercicio 4}
@@ -272,7 +272,16 @@ clasificador; mientras que en las CNN actuales aprendemos tanto el clasificador 
 \textbf{¿Cómo evoluciona el campo receptivo de las neuronas de una CNN con la profundidad de la capas? ¿Se solapan los campos receptivos de las distintas neuronas de
 una misma profundidad? ¿Es este hecho algo positivo o negativo de cara a un mejor funcionamiento?}
 
+El campo receptivo es una región local en el volumen de salida de la capa anterior a la que está conectada una neurona. Si tenemos en cuenta que esta región es un tensor
+3D con una profundidad igual a la profundidad del volumen en la capa anterior, podemos decir que cuanto más profunda sea nuestra red, \textbf{más se va a incrementar el
+campo receptivo}. El submuestreo, por ejemplo, aumentaría el tamaño del campo receptivo multiplicativamente.
 
+El \textbf{área superpuesta} depende del tamaño del \textit{'kernel'} y del \textit{'stride'}, ya que el \textit{stride} desplazaría el kernel en la capa siguiente.
+Los \textit{strides} más grandes darían lugar a una menor superposición, mientras que los \textit{kernels} más grandes darían lugar a una mayor superposición. No hay
+superposición solo si el \textit{stride} es igual al tamaño del \textit{kernel}.
+
+La superposición lo que hace es aprovechar la fuerte coherencia espacial que suelen tener las imágenes, es decir, nos ayuda a cubrir todo el campo visual. No obstante,
+una superposición excesiva puede hacer que perdamos demasiada información de lo que tenemos 'en primer plano' por así decirlo.
 
 
 \section*{Ejercicio 10}
@@ -293,7 +302,7 @@ El enfoque tradicional realiza la \textbf{detección de objetos} mediante técni
 características para hacer la \textbf{clasificación de imágenes}. Si un número significativo de características de una bolsa de palabras está en otra imagen, la imagen
 se clasifica como un objeto en específico.
 
-La dificultad con este enfoque tradicional es que es necesario elegir qué características son importantes en cada imagen dada, y medida que aumenta el número de clases
+La dificultad con este enfoque tradicional es que es necesario elegir qué características son importantes en cada imagen dada, y a medida que aumenta el número de clases
 se vuelve más complicado (es el criterio ingeniero el que decide qué características describen mejor los objetos).
 
 Los \textbf{modelos CNN} introdujeron el concepto \textit{end-to-end}, donde solo se recibe un conjunto de datos con todas sus clases y se entrena sobre ellos. Las redes
@@ -307,7 +316,22 @@ cada clase.
 \textbf{Es posible construir arquitecturas CNN que sean independientes de las dimensiones de la imagen de entrada. En caso afirmativo diga cómo hacerlo y cómo
 interpretar la salida.}
 
+La primera idea que se nos viene a la cabeza sería el preprocesamiento de los datos, ya sea cambiando el tamaño de las imágenes, recortándolas o realizando cualquier
+transformación. Sin embargo, quitando la pérdida de información producida, creo que no es lo que se pide exactamente en el ejercicio.
 
+Lo que se pide es buscar una arquitectura CNN que reciba cualquier tipo de imagen sin preprocesar. Para este caso tenemos varias soluciones:
+\begin{itemize}
+	\item \textbf{Fully Convolutional Networks (FCN)}. No tienen limitaciones en el tamaño de entrada porque una vez que se describe el tamaño del $kernel$ y los canales,
+		  la convolución produce una salida con las dimensiones correspondientes a la entrada (posiblemente muestreadas) para cada capa.
+	\item \textbf{\textit{Pooling}}. Podríamos aplicar alguna técnica de \textit{pooling} al final de una capa convolucional que vaya a una capa FC (Fully Connected). De
+		  esta forma podemos transformar el tensor de salida de dimensiones $(N, H, W, C)$ a un tensor de dimensiones $(N, 1, 1, C)$, donde la N es el número de muestras
+		  elegido, H y W son altura y anchura, y la C es el número de canales del tensor.
+	\item \textbf{\textit{ROI Pooling}}. Esta técnica también es una técnica de $pooling$, pero lo que la diferencia de las anteriores, es que la agrupación la adaptamos
+		  a las regiones de interés. Podemos pasar la imagen completa a la CNN ya que podemos utilizar el mismo mapa de características para todas las propuestas y además
+		  el número de canales de entrada es el mismo que el de salida para cada una de ellas.
+
+
+\end{itemize}
 
 
 \section*{Ejercicio 13}
@@ -325,7 +349,35 @@ del modelo para que se capaz de detectar las zonas de la imagen donde aparecen a
 que pueda ser aproximada por una secuencia de tres convoluciones: convolución 1x1 + convolución 3x3 + convolución 1x1. Diga también qué papel juegan cada una de las tres
 convoluciones.}
 
+Al decir 'tiene sentido' no se si la pregunta va referida a si se puede realizar el cálculo haciéndolo más eficiente, o a que el resultado obtenido será similar al que
+obtendríamos con la convolución 3x3, asi que voy a analizar los dos puntos de vista.
 
+\textbf{¿Por qué es más eficiente?} Si utilizamos 3 convoluciones en vez de 1 podremos reducir la profundidad de los tensores generados, y por tanto, se reducen también
+la cantidad de operaciones realizadas.
+\begin{equation}
+	n\_operaciones = prof_{ini} * kernel * prof_{obj} * alt_{obj} * anc_{obj}
+\end{equation}
+
+Utilizando una única convolución 3x3 al tensor de 128x32x32 nos da el siguiente resultado:
+\begin{equation}
+	n\_operaciones = 128 * (3*3) * 256 * 16 * 16 = 75.497.472
+\end{equation}
+
+Por otro lado, vamos a realizar las operaciones para llegar al tensor de salida utilizando las 3 convoluciones, calculando los dos tensores intermedios y sumando los
+resultados obtenidos:
+\begin{eqnarray*}
+	n\_operaciones & = & (128 * (1*1) * 64 * 32 * 32) + \\
+	& & (64 * (3*3) * 64 * 16 * 16) + \\
+	& & (64 * (1*1) * 256 * 16 * 16) = 22.020.096 \\
+\end{eqnarray*}
+
+Como podemos ver, la cantidad de operaciones se ha reducido considerablemente. Esto se debe a que hemos reducido a la mitad la profundidad en las dos primeras convoluciones,
+así reducir la dimensión a 16x16 de una forma más eficiente, y posteriormente aumentar a la profundidad de 256 objetivo.
+
+\textbf{¿Por qué el cálculo no es diferente?} Podríamos realizarlo de esta manera ya que la capa de convolución 1x1 actúa como una capa totalmente conectada en cuanto a píxeles,
+es decir, no cambiamos nada a nivel espacial (el alto y el ancho siguen siendo el mismo), pero reducimos el número de canales obteniendo los valores más significativos.
+
+Si la red está bien entrenada, sería capaz de representar la información más representativa con menos características.
 
 
 \section*{Ejercicio 15}
@@ -333,6 +385,16 @@ convoluciones.}
 
 \textbf{Identifique una propiedad técnica de los modelos CNN que permite pensar que podrían llegar a aproximar con precisión las características del modelo de visión
 humano, y que sin ella eso no sería posible. Explique bien su argumento.}
+
+En los humanos, cuando observamos una imagen, la información pasa a través de cada cortex visual \textbf{como si fueran capas de la red}. Cada uno de ellos extrae un tipo
+de información relevante, como pueden ser la ubicación espacial, color, tamaño, forma, etc.
+
+La arquitectura de modelos CNN tienen la propiedad de activar las neuronas cuando este tipo de patrones o información relevante la encontramos en los píxeles de una imagen.
+A su vez, se transmite entre capa y capa (cortex y cortex en el caso del cerebro).
+
+Al igual que ocurre en las redes convoluciones, en nuestro cerebro no se van activando todas las neuronas linealmente, si no que algunas pueden permanecer inactivas y activarse
+en otra fase del aprendizaje. Un ejemplo muy representativo de esto serían las capas de $Dropout$, aunque también existen otros métodos que reactivan neuronas inactivas.
+
 
 
 \end{document}
