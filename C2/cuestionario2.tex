@@ -182,14 +182,14 @@ Las desventajas que tiene son las siguientes:
 paralelismo entre la forma de actuar de esta técnica y el algoritmo de Canny. En caso positivo identifique cuales son los elementos comunes y en que se
 diferencian los distintos.}
 
-Una aproximación que hace esto es la \textbf{\textit{Selective Search}}, la cual no tiene aspectos muy similares al algoritmo de $Canny$. La búsqueda selectiva
-extrae una serie de características para cada píxel y realiza una agrupación jerárquica basándose en similitudes entre texturas, tamaños, forma y color; mientras
-que $Canny$ simplemente realiza una detección de contornos mediante histéresis. En caso de utilizar la búsqueda selectiva para detección de contornos, se podrían
-obtener diferenciando entre unos segmentos detectados y otros.
+Los bordes de una imagen los definimos como el conjunto de píxeles donde hemos obtenido un valor alto al hacer el calculo del gradiente. Una aproximación que
+extrae esta información es el histograma de gradientes (\textbf{HoG}).
 
-Como similitud podemos comentar que ambos tienen en cuenta las distintas escalas de a imagen, con la diferencia de que la búsqueda selectiva utiliza un algoritmo
-jerárquico, y $Canny$ detecta los contornos de escalas más grandes (sin fijarse tanto en los detalles) aumentando un valor de $\sigma$ y viceversa. También hacen
-uso de la derivada de la Gaussiana para hacer un filtrado de la imagen.
+La relación que tiene con \textbf{\textit{Canny}} no es muy grande. Si que es verdad que ambos utilizan el gradiente, pero, mientras que con HoG simplemente obtenemos
+el histograma para después trabajar con él, con \textit{Canny} vamos más allá, filtrando la imagen antes, haciendo supresión de no máximos y posteriormente utilizando
+histéresis para obtener los contornos.
+
+Resumiendo: HoG, cálculo de gradientes; \textit{Canny}, cálculo de contornos utilizando gradientes.
 
 
 \section*{Ejercicio 4}
@@ -199,7 +199,7 @@ uso de la derivada de la Gaussiana para hacer un filtrado de la imagen.
 distintos estos descriptores. Explique para que es útil cada uno de ellos.}
 
 Ambos están basados en los gradientes de primer orden de la imagen, pero como su propio nombre indica, HoG simplemente realiza un histograma de los gradientes
-agrupándolos segun su orientación; mientras que SIFT, después de hacer este histograma, realiza una interpolación entre ángulos vecinos y pondera los valores
+como comentamos en el ejercicio anterior; mientras que SIFT, después de hacer este histograma, realiza una interpolación entre ángulos vecinos y pondera los valores
 de todo el descriptor mediante la Gaussiana.
 
 Debido a esta ponderación Gaussiana que tiene SIFT, veo más útil utilizarlo para describir la importancia en un único punto; y HoG es más adecuado usarlo en
@@ -213,9 +213,9 @@ la clasificación de imágenes en general, ya que no tiene ese sesgo.
 imagen por la red. Asocie las capas que conozca a cada uno de ellos.}
 
 \begin{enumerate}
-    \item Utilizar capas convolucionales con su activación 'ReLU', 'linear', 'tanh'..., capas de $pooling$ o algunas funciones de regularización como
-          \textit{Dropout} o \textit{BatchNormalization}.
-    \item Utilizar un clasificador con capas totalmente conectadas para realizar la predicción. También contarán con su función de activación (siendo la
+    \item El primero es el uso de las capas convolucionales (con su activación 'ReLU', 'linear', 'tanh'...), capas de $pooling$ o algunas funciones de regularización
+          como \textit{Dropout} o \textit{BatchNormalization}.
+    \item El segundo es utilizar un clasificador con capas totalmente conectadas para realizar la predicción. También contarán con su función de activación (siendo la
           última 'softmax' para obtener las probabilidades de cada clase como salida).
 \end{enumerate}
 
@@ -233,8 +233,8 @@ partes de la imagen son un ejemplo de esto). Otra solución para evitar el sobre
 \textit{BatchNormalization}.
 
 Por otra parte, al hacer \textbf{\textit{backpropagation}} se pierde precisión y los gradientes también van disminuyendo. Este problema es más difícil de solucionar,
-ya que tendríamos que buscar nuevos métodos, como puede ser la ejecución capa por capa o utilizar clasificadores auxiliares en distintos niveles de la red neuronal
-(como hace GoogleNet).
+ya que tendríamos que buscar nuevos métodos, como puede ser la ejecución capa por capa, utilizar clasificadores auxiliares en distintos niveles de la red neuronal
+(como hace GoogleNet) o utilizar módulos residuales para poder realizar conexions directas no necesariamente secuenciales (como hace ResNet).
 
 
 \section*{Ejercicio 7}
@@ -243,9 +243,9 @@ ya que tendríamos que buscar nuevos métodos, como puede ser la ejecución capa
 \textbf{Existe actualmente alternativas de interés al aumento de la profundidad para el diseño de CNN. En caso afirmativo diga cuál/es y como son.}
 
 La primera alternativa sería el \textbf{desacoplamiento de nodos}, que elimina la conexión entre el nodo de la capa actual y el de la siguiente, ya sea poniéndolo
-a 0 con $Dropout$ o con $BatchNormalization$.
+a 0 como hace $Dropout$ o con otras técnicas como $BatchNormalization$.
 
-Otra posible alternativa sería la que utiliza $DenseNet$, que aumenta el número de conexiones entre una capas conectando la actual con todas las anteriores a ella
+Otra posible alternativa sería la que utiliza $DenseNet$, que aumenta el número de conexiones entre capas, conectando la actual con todas las anteriores a ella
 (aumento de \textbf{densidad}).
 
 También tenemos el uso de múltiples escalas simultáneamente, es decir, aumentar la \textbf{anchura} de una red para así poder extraer más características.
@@ -272,16 +272,16 @@ clasificador; mientras que en las CNN actuales aprendemos tanto el clasificador 
 \textbf{¿Cómo evoluciona el campo receptivo de las neuronas de una CNN con la profundidad de la capas? ¿Se solapan los campos receptivos de las distintas neuronas de
 una misma profundidad? ¿Es este hecho algo positivo o negativo de cara a un mejor funcionamiento?}
 
-El campo receptivo es una región local en el volumen de salida de la capa anterior a la que está conectada una neurona. Si tenemos en cuenta que esta región es un tensor
-3D con una profundidad igual a la profundidad del volumen en la capa anterior, podemos decir que cuanto más profunda sea nuestra red, \textbf{más se va a incrementar el
-campo receptivo}. El submuestreo, por ejemplo, aumentaría el tamaño del campo receptivo multiplicativamente.
+El campo receptivo es la región del espacio de entrada que afecta a una neurona en particular de la red. Si tenemos en cuenta que esta región es un tensor 3D con una
+profundidad igual a la profundidad del volumen en la capa anterior, podemos decir que cuanto más profunda sea nuestra red, \textbf{más se va a incrementar el campo
+receptivo}. El submuestreo, por ejemplo, aumentaría el tamaño del campo receptivo multiplicativamente.
 
 El \textbf{área superpuesta} depende del tamaño del \textit{'kernel'} y del \textit{'stride'}, ya que el \textit{stride} desplazaría el kernel en la capa siguiente.
-Los \textit{strides} más grandes darían lugar a una menor superposición, mientras que los \textit{kernels} más grandes darían lugar a una mayor superposición. No hay
-superposición solo si el \textit{stride} es igual al tamaño del \textit{kernel}.
+Los \textit{strides} más grandes darían lugar a una menor superposición, mientras que los \textit{kernels} más grandes darían lugar a una mayor superposición. Solo si
+el tamaño del \textit{stride} es igual al del \textit{kernel}, no habría superposición.
 
 La superposición lo que hace es aprovechar la fuerte coherencia espacial que suelen tener las imágenes, es decir, nos ayuda a cubrir todo el campo visual. No obstante,
-una superposición excesiva puede hacer que perdamos demasiada información de lo que tenemos 'en primer plano' por así decirlo.
+una superposición excesiva puede hacer que perdamos demasiada información de, lo que podríamos llamar, 'el primer plano'.
 
 
 \section*{Ejercicio 10}
@@ -289,7 +289,11 @@ una superposición excesiva puede hacer que perdamos demasiada información de l
 
 \textbf{¿Qué operación es central en el proceso de aprendizaje y optmización de una CNN?}
 
+La operación principal en el proceso de aprendizaje son las \textbf{capas de activación}. Son las más importantes ya que son las funciones que aportan la no linealidad
+a las salidas de las capas convolucionales (obviamente, la capa de activación tiene que ser no lineal, si no, no estamos haciendo nada).
 
+Las capas convolucionales realizan transformaciones lineales; por lo tanto, si a nuestros datos sólo le aplicamos convoluciones, la red neuronal simplemente sería un
+muestreo lineal entre la entrada y la salida, perdiendo la capacidad de aprender.
 
 
 \section*{Ejercicio 11}
@@ -299,14 +303,14 @@ una superposición excesiva puede hacer que perdamos demasiada información de l
 sido muy mejorados en los modelos CNN. Indique cómo.}
 
 El enfoque tradicional realiza la \textbf{detección de objetos} mediante técnicas bien establecidas como SIFT, SURF, BRIEF, etc; y posteriormente se extraen las
-características para hacer la \textbf{clasificación de imágenes}. Si un número significativo de características de una bolsa de palabras está en otra imagen, la imagen
-se clasifica como un objeto en específico.
+características para hacer su \textbf{clasificación}. Si un número significativo de características de una bolsa de palabras está en otra imagen, la imagen se clasifica
+como un objeto en específico.
 
-La dificultad con este enfoque tradicional es que es necesario elegir qué características son importantes en cada imagen dada, y a medida que aumenta el número de clases
-se vuelve más complicado (es el criterio ingeniero el que decide qué características describen mejor los objetos).
+La dificultad con este enfoque tradicional es que, es necesario elegir qué características son importantes en cada imagen dada, y a medida que aumenta el número de clases
+se vuelve más complicado (es el criterio del ingeniero el que decide qué características describen mejor los objetos).
 
 Los \textbf{modelos CNN} introdujeron el concepto \textit{end-to-end}, donde solo se recibe un conjunto de datos con todas sus clases y se entrena sobre ellos. Las redes
-neuronales descubren patrones en las imágenes (ya sea detección de bordes, de esquinas...) y automáticamente extrae las características más descriptivas con respecto a
+neuronales descubren patrones en las imágenes (ya sea con detección de bordes, de esquinas...) y automáticamente extrae las características más descriptivas con respecto a
 cada clase.
 
 
@@ -340,6 +344,16 @@ Lo que se pide es buscar una arquitectura CNN que reciba cualquier tipo de image
 \textbf{Suponga que entrenamos una arquitectura Lenet-5 para clasificar imágenes 128x128 de 5 clases distintas. Diga que cambios deberían de hacerse en la arquitectura
 del modelo para que se capaz de detectar las zonas de la imagen donde aparecen alguno de los objetos con los que fue entrenada.}
 
+Transformaría la arquitectura Lenet-5 a una red R-CNN (\textit{Region proposals + CNN features}), la cual mantendría el clasificador Lenet-5 ya entrenado. Las R-CNN 
+proceden de la siguiente manera:
+
+Primero extraemos las diferentes regiones mediante \textbf{\textit{Selective Search}}, categorizamos y dibujamos su \textit{bounding box}. Este paso sería el principal
+cambio que realizamos para detectar las zonas donde aparecen los diferentes objetos, las cuales se pueden ajustar también a la dimensión de entrada requerido en Lenet-5.
+
+A continuación, se selecciona un CNN previamente entrenado y lo colocamos antes de la capa de salida. En nuestro caso sería la arquitectura Lenet-5.
+
+Entrenamos múltiples SVM para determinar si un ejemplo pertenece a una determinada clase (clasificación), y por último, entrenamos también un modelo de regresión lineal para
+realizar la predicción de las \textit{bounding box}.
 
 
 \section*{Ejercicio 14}
@@ -349,6 +363,7 @@ del modelo para que se capaz de detectar las zonas de la imagen donde aparecen a
 que pueda ser aproximada por una secuencia de tres convoluciones: convolución 1x1 + convolución 3x3 + convolución 1x1. Diga también qué papel juegan cada una de las tres
 convoluciones.}
 
+\newpage
 Al decir 'tiene sentido' no se si la pregunta va referida a si se puede realizar el cálculo haciéndolo más eficiente, o a que el resultado obtenido será similar al que
 obtendríamos con la convolución 3x3, asi que voy a analizar los dos puntos de vista.
 
@@ -377,7 +392,7 @@ así reducir la dimensión a 16x16 de una forma más eficiente, y posteriormente
 \textbf{¿Por qué el cálculo no es diferente?} Podríamos realizarlo de esta manera ya que la capa de convolución 1x1 actúa como una capa totalmente conectada en cuanto a píxeles,
 es decir, no cambiamos nada a nivel espacial (el alto y el ancho siguen siendo el mismo), pero reducimos el número de canales obteniendo los valores más significativos.
 
-Si la red está bien entrenada, sería capaz de representar la información más representativa con menos características.
+Si la red está bien entrenada, también es capaz de mostrar la información más representativa con menos características.
 
 
 \section*{Ejercicio 15}
