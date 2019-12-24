@@ -1,0 +1,193 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[spanish,es-nodecimaldot]{babel}	% Utilizar español
+\usepackage[utf8]{inputenc}					% Caracteres UTF-8
+\usepackage{graphicx}						% Imagenes
+\usepackage[hidelinks]{hyperref}			% Poner enlaces sin marcarlos en rojo
+\usepackage{fancyhdr}						% Modificar encabezados y pies de pagina
+\usepackage{float}							% Insertar figuras
+\usepackage[textwidth=390pt]{geometry}		% Anchura de la pagina
+\usepackage[nottoc]{tocbibind}				% Referencias (no incluir num pagina indice en Indice)
+\usepackage{enumitem}						% Permitir enumerate con distintos simbolos
+\usepackage[T1]{fontenc}					% Usar textsc en sections
+\usepackage{amsmath}						% Símbolos matemáticos
+\usepackage{listings}
+\usepackage{color}
+
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.99,0.99,0.99}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle, language=Python}
+
+% Comando para poner el nombre de la asignatura
+\newcommand{\asignatura}{Visión por Computador}
+\newcommand{\autor}{José María Sánchez Guerrero}
+\newcommand{\titulo}{Cuestionario 2}
+\newcommand{\subtitulo}{Clasificación de escenas y objetos}
+
+% Configuracion de encabezados y pies de pagina
+\pagestyle{fancy}
+\lhead{\autor{}}
+\rhead{\asignatura{}}
+\lfoot{Grado en Ingeniería Informática}
+\cfoot{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}		% Linea cabeza de pagina
+\renewcommand{\footrulewidth}{0.4pt}		% Linea pie de pagina
+
+\begin{document}
+\pagenumbering{gobble}
+
+% Pagina de titulo
+\begin{titlepage}
+
+\begin{minipage}{\textwidth}
+
+\centering
+
+\includegraphics[scale=0.5]{img/ugr.png}\\
+
+\textsc{\Large \asignatura{}\\[0.2cm]}
+\textsc{GRADO EN INGENIERÍA INFORMÁTICA}\\[1cm]
+
+\noindent\rule[-1ex]{\textwidth}{1pt}\\[1.5ex]
+\textsc{{\Huge \titulo\\[0.5ex]}}
+\textsc{{\Large \subtitulo\\}}
+\noindent\rule[-1ex]{\textwidth}{2pt}\\[3.5ex]
+
+\end{minipage}
+
+\vspace{0.5cm}
+
+\begin{minipage}{\textwidth}
+
+\centering
+
+\textbf{Autor}\\ {\autor{}}\\[2.5ex]
+\textbf{Rama}\\ {Computación y Sistemas Inteligentes}\\[2.5ex]
+\vspace{0.3cm}
+
+\includegraphics[scale=0.3]{img/etsiit.jpeg}
+
+\vspace{0.7cm}
+\textsc{Escuela Técnica Superior de Ingenierías Informática y de Telecomunicación}\\
+\vspace{1cm}
+\textsc{Curso 2019-2020}
+\end{minipage}
+\end{titlepage}
+
+\pagenumbering{arabic}
+\tableofcontents
+\thispagestyle{empty}				% No usar estilo en la pagina de indice
+
+\newpage
+
+\setlength{\parskip}{1em}
+
+
+\section*{Ejercicio 1}
+\addcontentsline{toc}{section}{Ejercicio 1}
+\textbf{¿Cuál es la transformación más fuerte de la geometría de una escena que puede introducirse al tomar una foto de ella? Dar algún ejemplo.}
+
+\section*{Ejercicio 2}
+\addcontentsline{toc}{section}{Ejercicio 2}
+\textbf{Por qué es necesario usar el plano proyectivo para estudiar las transformaciones en las imágenes de fotos de escenas? Dar algún ejemplo.}
+
+\section*{Ejercicio 3}
+\addcontentsline{toc}{section}{Ejercicio 3}
+\textbf{Sabemos que en el plano proyectivo un punto no existe en el sentido del plano afín, sino que se define por una clase de equivalencia de
+vectores definida por . Razone usando las coordenadas proyectivas de los puntos afines de una recta que pase por el (0,0) del plano
+afín y verifique que los punto de la recta del infinito del plano proyectivo son necsariamente vectores del tipo (*,*,0) con *=cualquier número.}
+
+
+\section*{Ejercicio 4}
+\addcontentsline{toc}{section}{Ejercicio 4}
+\textbf{¿Qué propiedades de la geometría de un plano quedan invariantes cuando se toma una foto de él? Justificar la respuesta.}
+
+
+\section*{Ejercicio 5}
+\addcontentsline{toc}{section}{Ejercicio 5}
+\textbf{En coordenadas homogéneas los puntos y rectas del plano se representan por vectores de tres coordenadas (notados x y l respectivamente), de
+manera que si una recta contiene a un punto se verifica la ecuación 
+. Considere una homografía H que transforma vectores de puntos, x= Hx. Dado que una homografía transforma vectores de tres coordenadas también
+existen homografías G para transformar vectores de rectas l= Gl. Suponga una recta l y un punto x que verifican xTl=0 en el plano proyectivo y
+suponga que conoce una homografía H que transforma vectores de puntos. En estas condiciones ¿cuál es la homografía G que transforma los vectores de
+las rectas? Deducirla matemáticamente.}
+
+\section*{Ejercicio 6}
+\addcontentsline{toc}{section}{Ejercicio 6}
+\textbf{¿Cuál es el mínimo número de escalares necesarios para fijar una homografía general? ¿Y si la homografía es afín? Justificar la respuesta}
+
+
+\section*{Ejercicio 7}
+\addcontentsline{toc}{section}{Ejercicio 7}
+\textbf{Defina una homografía entre planos proyectivos que haga que el punto (3,0,2) del plano proyectivo-1 se transforme en un punto de la recta del
+infinito del plano proyectivo-2? Justificar la respuesta.}
+
+
+\section*{Ejercicio 8}
+\addcontentsline{toc}{section}{Ejercicio 8}
+\textbf{}
+
+\section*{Ejercicio 9}
+\addcontentsline{toc}{section}{Ejercicio 9}
+\textbf{¿Cuáles son las propiedades necesarias y suficientes para que una matriz defina un movimiento geométrico no degenerado entre planos? Justificar
+la respuesta}
+
+
+\section*{Ejercicio 10}
+\addcontentsline{toc}{section}{Ejercicio 10}
+\textbf{¿Qué información de la imagen usa el detector de Harris para seleccionar puntos? ¿El detector de Harris detecta patrones geométricos o fotométricos?
+Justificar la contestación.}
+
+
+\section*{Ejercicio 11}
+\addcontentsline{toc}{section}{Ejercicio 11}
+\textbf{¿Sería adecuado usar como descriptor de un punto Harris los valores de los píxeles de su región de soporte? Identifique ventajas, inconvenientes y
+mecanismos de superación de estos últimos.}
+
+
+\section*{Ejercicio 12}
+\addcontentsline{toc}{section}{Ejercicio 12}
+\textbf{Describa un par de criterios que sirvan para seleccionar parejas de puntos en correspondencias (“matching”) a partir de descriptores de regiones
+extraídos de dos imágenes. ¿Por qué no es posible garantizar que todas las parejas son correctas?}
+
+
+\section*{Ejercicio 13}
+\addcontentsline{toc}{section}{Ejercicio 13}
+\textbf{Cual es el objetivo principal del uso de la técnica RANSAC en el cálculo de una homografía. Justificar la respuesta}
+
+
+\section*{Ejercicio 14}
+\addcontentsline{toc}{section}{Ejercicio 14}
+\textbf{Si tengo 4 imágenes de una escena de manera que se solapan la 1-2, 2-3 y 3-4. ¿Cuál es el número mínimo de parejas de puntos en correspondencias
+necesarios para montar un mosaico? Justificar la respuesta}
+
+
+\section*{Ejercicio 15}
+\addcontentsline{toc}{section}{Ejercicio 15}
+\textbf{¿En la confección de un mosaico con proyección rectangular es esperable que aparezcan deformaciones geométricas de la escena real? ¿Cuáles y por qué?
+¿Bajo qué condiciones esas deformaciones podrían no estar presentes? Justificar la respuesta.}
+
+\end{document}
