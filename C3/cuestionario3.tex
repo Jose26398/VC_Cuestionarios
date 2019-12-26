@@ -215,6 +215,27 @@ H^T G = I \rightarrow G = (H^-1)^T
 \textbf{Defina una homografía entre planos proyectivos que haga que el punto (3,0,2) del plano proyectivo-1 se transforme en un punto de la recta del
 infinito del plano proyectivo-2? Justificar la respuesta.}
 
+Tenemos que calcular una homografía H, definida como una matriz 3x3, tal que la multiplicación de ésta con el punto dado, se convierta en un punto de
+la recta del infinito del plano proyectivo-2, es decir:
+\begin{equation*}
+\begin{bmatrix}a & b & c\\d & e & f \\g & h & 1\end{bmatrix}\cdot \begin{bmatrix}3\\0\\2\end{bmatrix} = \begin{bmatrix}x'\\y'\\w'\end{bmatrix}
+\end{equation*}
+
+El sistema de ecuaciones resultante es el siguiente:
+\begin{equation*}\left\{\begin{matrix}
+x' = 3a+0b+2c\\ 
+y' = 3d+0e+2f\\ 
+w' = 3g+0h+(2\cdot 1)
+\end{matrix}\right.\end{equation*}
+
+Como ya sabemos que es un punto de la recta del infinito, $w'$ tendrá que valer 0. Si sustituimos en la última ecuación tenemos que:
+$$w' = 3g+0h+(2\cdot1)$$
+$$0  = 3g+0+2$$
+$$g = -(3/2)$$
+
+Por lo tanto, si cuando aplicamos una homografía entre planos proyectivos hacemos que el valor $g$ de la matriz valga $-(3/2)$, nos aseguramos que el
+punto (3,0,2) será un punto de la recta del infinito del plano proyectivo 2.
+
 
 \section*{Ejercicio 8}
 \addcontentsline{toc}{section}{Ejercicio 8}
@@ -224,6 +245,13 @@ infinito del plano proyectivo-2? Justificar la respuesta.}
 \addcontentsline{toc}{section}{Ejercicio 9}
 \textbf{¿Cuáles son las propiedades necesarias y suficientes para que una matriz defina un movimiento geométrico no degenerado entre planos? Justificar
 la respuesta}
+
+Para definir un movimiento geométrico no degenerado entre planos, tenemos que transformar un punto de un plano $P$ a un punto de otro plano $P'$. Sin embargo,
+esta transformación también la podremos hacer desde $P'$ hasta $P$, lo que quiere decir que una de las propiedades tiene que ser la \textbf{inversa}. Su
+matriz debe aceptar que pasemos de $M \rightarrow M^{-1}$, o lo que es lo mismo, que su determinante sea igual a 0.
+
+La otra propiedad necesaria es que la matriz de la transformación tiene que ser de \textbf{3x3}, ya que los planos están definidos en 3 dimensiones.
+Para transformar un punto del plano con 3 coordenadas, necesitamos una matriz 3x3 para así multiplicarlas y obtener un punto de la misma dimensión.
 
 
 \section*{Ejercicio 10}
