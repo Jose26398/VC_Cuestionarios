@@ -43,8 +43,8 @@
 % Comando para poner el nombre de la asignatura
 \newcommand{\asignatura}{Visión por Computador}
 \newcommand{\autor}{José María Sánchez Guerrero}
-\newcommand{\titulo}{Cuestionario 2}
-\newcommand{\subtitulo}{Clasificación de escenas y objetos}
+\newcommand{\titulo}{Cuestionario 3}
+\newcommand{\subtitulo}{Feature Matching y Panoramas}
 
 % Configuracion de encabezados y pies de pagina
 \pagestyle{fancy}
@@ -209,6 +209,15 @@ H^T G = I \rightarrow G = (H^-1)^T
 \addcontentsline{toc}{section}{Ejercicio 6}
 \textbf{¿Cuál es el mínimo número de escalares necesarios para fijar una homografía general? ¿Y si la homografía es afín? Justificar la respuesta}
 
+El número mínimo de escalares es 8, porque en una homografía general G, definida como $G = \begin{bmatrix}a & b & c\\d & e & f \\g & h & 1\end{bmatrix}$,
+vemos que la última variable siempre valdrá 1.
+
+En cuanto a una homografía afin, los grados de libertad mínimos que tenemos son 6, ya que la última fila de la matriz anterior valdrá (0,0,1).
+
+Tanto una como otra vienen bastante bien explicadas y con ejemplos en el siguiente artículo:
+
+https://courses.cs.washington.edu/courses/csep576/11sp/pdf/Transformations.pdf
+
 
 \section*{Ejercicio 7}
 \addcontentsline{toc}{section}{Ejercicio 7}
@@ -239,7 +248,39 @@ punto (3,0,2) será un punto de la recta del infinito del plano proyectivo 2.
 
 \section*{Ejercicio 8}
 \addcontentsline{toc}{section}{Ejercicio 8}
-\textbf{}
+\textbf{Una homografía general $\mathbf{H}=\begin{pmatrix}a & b & c \\ d & e & f \\
+g & h & i \end{pmatrix} = \begin{bmatrix} \mathbf{A} & \mathbf{t} \\ \mathbf{v}^T & v
+\end{bmatrix}$, $\text{det}(\mathbf{H}) \neq 0$ admite una
+descomposición única en movimiento elementales de la siguiente
+forma $\mathbf{H} = \mathbf{H}_S\mathbf{H}_A\mathbf{H}_P$ donde $\mathbf{H}_S$
+representa la homografía de una similaridad
+(escala, giro y traslación), $\mathbf{H}_A$ la homografía de un movimiento afín
+puro y $\mathbf{H}_P$ una transformación proyectiva pura. Es decir,}
+
+$$\mathbf{H}_S = \begin{pmatrix} s\cos\theta & -s\sin\theta & t_x \\ s\sin\theta & s\cos\theta & t_y \\
+0 & 0 & 1 \end{pmatrix} \equiv \begin{bmatrix} s\mathbf{R} & \mathbf{t} \\ \mathbf{0}^T & 1 \end{bmatrix}, s>0$$
+
+$$\mathbf{H}_A = \begin{pmatrix} a & c & 0 \\ 0 & b &0 \\ 0 & 0 & 1 \end{pmatrix} \equiv
+\begin{bmatrix} s\mathbf{K} & \mathbf{0} \\ \mathbf{0}^T & 1 \end{bmatrix}, \text{det}(\mathbf{K}=1$$
+
+$$\mathbf{H}_P = \begin{pmatrix} 1 & 0 & 0 \\ 0 & 1 &0 \\ v_1 & v_2 & v \end{pmatrix} \equiv
+\begin{bmatrix} \mathbf{I} & \mathbf{0} \\ \mathbf{v}^T & v \end{bmatrix}, v \neq 0$$
+
+(Notación: en negrita son vectores o matrices)
+
+Describir un algoritmo que permite encontrar las matrices de la
+descomposición de una matriz $\mathbf{H}$ dada. Aplicarlo para encontrar la
+descomposición de
+
+$$
+  \mathbf{H} = \begin{pmatrix}
+  1.707 & 0.586 & 1.0 \\
+  2.707 & 8.242 & 2.0 \\
+  1.0 & 2.0 & 1.0
+  \end{pmatrix}
+$$
+
+
 
 \section*{Ejercicio 9}
 \addcontentsline{toc}{section}{Ejercicio 9}
@@ -259,11 +300,28 @@ Para transformar un punto del plano con 3 coordenadas, necesitamos una matriz 3x
 \textbf{¿Qué información de la imagen usa el detector de Harris para seleccionar puntos? ¿El detector de Harris detecta patrones geométricos o fotométricos?
 Justificar la contestación.}
 
+Mediante una ventana deslizante, el detector de Harris va recorriendo la imagen y buscando los cambios más bruscos en la intensidad del gradiente. Una vez
+hemos obtenido estos puntos, utilizamos el criterio de Harris para ver con cuáles nos quedaremos o no:
+$$ M' = det(M) - k(Traza(M))^2 $$
+
+Los píxeles que tengan un valor alto (utilizando un umbral determinado), serán los puntos Harris elegidos.
+
+Harris detecta tanto patrones geométricos cómo fotométricos, ya que utliza la geometría para poder detectar, por ejemplo las esquinas; y los fotométricos,
+porque como acabamos de comentar, también se hace uso de la intensidad del gradiente.
+
 
 \section*{Ejercicio 11}
 \addcontentsline{toc}{section}{Ejercicio 11}
 \textbf{¿Sería adecuado usar como descriptor de un punto Harris los valores de los píxeles de su región de soporte? Identifique ventajas, inconvenientes y
 mecanismos de superación de estos últimos.}
+
+No encuentro ninguna ventaja, ya que estamos hablando de los descriptores. Es cierto que el detector si es invariante a la rotación o cambios de intensidad,
+sin embargo, el descriptor no (Harris te va a detectar los mismos puntos).
+
+Los inconvenientes que tiene esto es que las sombras, los cambios de intensidades de luz, etc. sí que cambian los valores de los píxeles, haciendo que dos
+descriptores sean distintos teniendo que ser iguales. Para solucionarlo, podemos utilizar los descriptores SIFT, que crea una ventana de 16x16 y calcula un
+histograma con las orientaciones de los gradientes para cada uno sus cuadrantes 4x4. De esta forma, no sólo tenemos en cuenta uno de los gradientes, sino
+un vecindario de ellos.
 
 
 \section*{Ejercicio 12}
@@ -271,10 +329,30 @@ mecanismos de superación de estos últimos.}
 \textbf{Describa un par de criterios que sirvan para seleccionar parejas de puntos en correspondencias (“matching”) a partir de descriptores de regiones
 extraídos de dos imágenes. ¿Por qué no es posible garantizar que todas las parejas son correctas?}
 
+Vamos a describir los dos métodos utilizados en las prácticas:
+\begin{itemize}
+	\item \textbf{Brute Force}. Comprueba punto a punto la distancia (por ejemplo Euclídea) que existe entre el primer y segundo descriptor, y posteriormente,
+		  selecciona la correspondencia que obtenga el valor más bajo. Este método es bastante simple, pero no podemos garantizar que todas las parejas sean
+		  correctas, ya que si tenemos objetos parecidos en la imagen o que sigan patrones, se puede confundir.
+	\item \textbf{Lowe Average 2NN}. Este clasificador de vecino más cercano encuentra las k mejores coincidencias para cada descriptor. El parámetro k=2, ya
+		  que es un 2NN, y entre estos nos quedaremos con uno siguiendo el método de Lowe. Este método elige el mejor match $m$ sii $m < umbral * m2$, siendo $m2$
+		  la distancia hasta el match $m$. De esta forma, con más de un descriptor, evitamos el problema anterior de las correspondencias asociadas.
+\end{itemize}
+
 
 \section*{Ejercicio 13}
 \addcontentsline{toc}{section}{Ejercicio 13}
 \textbf{Cual es el objetivo principal del uso de la técnica RANSAC en el cálculo de una homografía. Justificar la respuesta}
+
+El objetivo principal es realizar un ajuste únicamente de los puntos válidos ($inliers$), descartando los puntos atípicos ($outliers$). Esto lo hacemos para
+realizar un ajuste bueno cuando hagamos la homografía, y que no nos perjudique el ruido o una mala interpretación en los datos.
+
+Vamos a ver un ejemplo de cómo RANSAC ajusta la siguiente recta comprobando que la distancia entre los $inliers$ y los $outliers$ supera un umbral y, en
+consecuencia, descartando estos últimos.
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{img/ransac.png}
+\end{figure}
 
 
 \section*{Ejercicio 14}
@@ -282,10 +360,25 @@ extraídos de dos imágenes. ¿Por qué no es posible garantizar que todas las p
 \textbf{Si tengo 4 imágenes de una escena de manera que se solapan la 1-2, 2-3 y 3-4. ¿Cuál es el número mínimo de parejas de puntos en correspondencias
 necesarios para montar un mosaico? Justificar la respuesta}
 
+El número mínimo de puntos necesarios para realizar una homografía son 4 parejas de puntos en correspondencias (2 matches). Si queremos hacer un mosaico de 4
+imágenes, tendremos que realizar 3 homografías, por lo que necesitaremos 12 parejas de puntos en correspondencia.
+
 
 \section*{Ejercicio 15}
 \addcontentsline{toc}{section}{Ejercicio 15}
 \textbf{¿En la confección de un mosaico con proyección rectangular es esperable que aparezcan deformaciones geométricas de la escena real? ¿Cuáles y por qué?
 ¿Bajo qué condiciones esas deformaciones podrían no estar presentes? Justificar la respuesta.}
+
+Si es esperable que aparezcan deformaciones, ya que está todo proyectado en el mismo plano pero cada una de las imágenes tomadas tiene una dirección diferente.
+
+Las deformaciones que se generan son debidas a las propias proyección de la imagen en el mismo plano. Otra deformación generada es la que obtenemos entre imagen
+e imagen, es decir, a medida que nos vamos alejando de la imagen central, el error en el mosaico aumenta (por eso solemos empezar desde la central).
+
+No obtendríamos estas deformaciones si proyectasemos en un cilindro, en el cual no se deforma la escena. No obstante, si produciría una pequeña distorsión debido
+a la propia representación en forma cilíndrica.  Por ejemplo, lo podemos observar en los caminos de la siguiente imagen:
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.6]{img/casa.png}
+\end{figure}
 
 \end{document}
